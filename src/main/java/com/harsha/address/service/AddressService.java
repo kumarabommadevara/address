@@ -28,8 +28,8 @@ public class AddressService {
     }
 
     public Address findAddressByInstructorId(Integer instructorId) {
-        return addressRepository.findAddressByInstructorId(instructorId).orElseThrow(() ->
-                new RuntimeException("Address for the instructor id " + instructorId + "is not present"));
+        return addressRepository.findAddressByInstructorId(instructorId).orElse(null);
+
     }
 
     public Address findAddressById(Integer id) {

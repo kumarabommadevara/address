@@ -7,6 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
-    @Query(value = "Select * from Customers c where c.name=?", nativeQuery = true)
+    @Query(value = "Select * from Customers c where c.username=?", nativeQuery = true)
     Customer findByUserName(String username);
 }

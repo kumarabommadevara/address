@@ -17,7 +17,7 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private String username;
     private String email;
     private String password;
     private String crole="USER";
@@ -26,7 +26,7 @@ public class Customer {
     }
 
     public Customer(String name, String email, String password, String role) {
-        this.name = name;
+        this.username = name;
         this.email = email;
         this.password = password;
         this.crole = role;

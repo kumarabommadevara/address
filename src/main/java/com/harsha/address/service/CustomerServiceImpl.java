@@ -26,7 +26,7 @@ public class CustomerServiceImpl implements CustomerService {
             throw new RuntimeException("customer with name " + username + "not found");
         }
 
-        return User.withUsername(customer.getName())
+        return User.withUsername(customer.getUsername())
                 .password(customer.getPassword())
                 .roles(customer.getCrole())
                 .build();
@@ -45,7 +45,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void saveCustomer(SignupRequest signupRequest) {
        Customer customer=new Customer();
-       customer.setName(signupRequest.getName());
+       customer.setUsername(signupRequest.getName());
        customer.setEmail(signupRequest.getEmail());
        customer.setPassword(signupRequest.getPassword());
        customerRepository.save(customer);

@@ -17,3 +17,8 @@ spring:
        ddlAuto: update
   h2:
     console.enabled: true
+bezkoder:
+  app:
+    jwtExpirationMs: 86400000
+    jwtSecret: ======================BezKoder=Spring===========================
+

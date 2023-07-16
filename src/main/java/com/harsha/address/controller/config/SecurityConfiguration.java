@@ -1,5 +1,6 @@
 package com.harsha.address.controller.config;
 
+import com.harsha.address.config.RestAuthenticationEntryPoint;
 import com.harsha.address.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,21 +29,22 @@ public class SecurityConfiguration {
             "/login",
             "/home",
             "/test",
+            "/signup",
             "/h2-console/**"
     };
 
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests(request ->
-                        request.antMatchers(ENDPOINTS_WHITELIST).permitAll()
-                                .anyRequest().authenticated());
 
-          http.csrf().ignoringAntMatchers("/h2-console/**");
-          http.headers().frameOptions().sameOrigin();
-            http
-                .formLogin()
-                .and().httpBasic();
+        http.
+        authorizeRequests().antMatchers(ENDPOINTS_WHITELIST).permitAll()
+                                .anyRequest().authenticated()
+                                        .and().formLogin().permitAll().and()
+                        .logout().permitAll().and().httpBasic();
+http.cors().disable().csrf().disable();
+
+        http.headers().frameOptions().sameOrigin();
              http.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and();
         return http.build();
     }

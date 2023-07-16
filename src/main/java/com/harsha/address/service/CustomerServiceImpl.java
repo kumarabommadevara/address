@@ -28,6 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
 
       return User.withUsername(customer.getName())
                 .password(customer.getPassword())
+              .roles(customer.getCrole())
                 .build();
 
     }

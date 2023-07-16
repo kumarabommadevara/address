@@ -4,15 +4,16 @@ logging:
 spring:
   profiles.actives: dev
   datasource:
-    url: jdbc:h2:mem:mydb
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
     username: sa
     password: password
     driverClassName: org.h2.Driver
   jpa:
+    defer-datasource-initialization: true
     show-sql: true
     properties:
       hibernate:
        dialect: org.hibernate.dialect.H2Dialect
-       ddlAuto: create
+       ddlAuto: update
   h2:
     console.enabled: true

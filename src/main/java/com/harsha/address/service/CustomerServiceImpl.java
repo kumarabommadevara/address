@@ -1,6 +1,7 @@
 package com.harsha.address.service;
 
 import com.harsha.address.model.Customer;
+import com.harsha.address.model.SignupRequest;
 import com.harsha.address.repository.CustomerRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,15 +22,32 @@ public class CustomerServiceImpl implements CustomerService {
 
         Customer customer = customerRepository.findByUserName(username);
 
-        if(customer==null)
-        {
-            throw  new RuntimeException("customer with name "+username +"not found");
+        if (customer == null) {
+            throw new RuntimeException("customer with name " + username + "not found");
         }
 
-      return User.withUsername(customer.getName())
+        return User.withUsername(customer.getName())
                 .password(customer.getPassword())
-              .roles(customer.getCrole())
+                .roles(customer.getCrole())
                 .build();
 
+    }
+
+    @Override
+    public boolean checkIfUserExits(String name) {
+        Customer customer = customerRepository.findByUserName(name);
+        if (customer == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void saveCustomer(SignupRequest signupRequest) {
+       Customer customer=new Customer();
+       customer.setName(signupRequest.getName());
+       customer.setEmail(signupRequest.getEmail());
+       customer.setPassword(signupRequest.getPassword());
+       customerRepository.save(customer);
     }
 }

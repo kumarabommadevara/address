@@ -20,7 +20,7 @@ public class Customer {
     private String name;
     private String email;
     private String password;
-    private String crole;
+    private String crole="USER";
 
     public Customer() {
     }

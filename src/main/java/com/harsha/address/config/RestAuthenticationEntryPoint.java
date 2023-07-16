@@ -1,4 +1,4 @@
-package com.harsha.address.controller.config;
+package com.harsha.address.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.harsha.address.model.ApiResponse;

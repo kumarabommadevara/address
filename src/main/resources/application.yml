@@ -2,6 +2,8 @@ logging:
   level:
     root: DEBUG
 spring:
+  main:
+    allow-circular-references: true
   profiles.actives: dev
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
@@ -19,6 +21,6 @@ spring:
     console.enabled: true
 bezkoder:
   app:
-    jwtExpirationMs: 86400000
+    jwtExpirationMs: 60000
     jwtSecret: ======================BezKoder=Spring===========================
 

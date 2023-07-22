@@ -27,10 +27,10 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
 
-        Customer userPrincipal = (Customer) authentication.getPrincipal();
+       // Customer userPrincipal = (Customer) authentication.();
 
         return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
+                .setSubject((authentication.getName()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)

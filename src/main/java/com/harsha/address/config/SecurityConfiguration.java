@@ -1,8 +1,9 @@
-package com.harsha.address.controller.config;
+package com.harsha.address.config;
 
 import com.harsha.address.config.JWTAuthenticationFilter;
 import com.harsha.address.config.RestAuthenticationEntryPoint;
 import com.harsha.address.service.CustomerService;
+import com.harsha.address.service.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,13 +21,15 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @Configuration
 public class SecurityConfiguration {
     @Autowired
-    CustomerService customerServiceImpl;
+    CustomerServiceImpl customerServiceImpl;
     @Autowired
     RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public static final String[] ENDPOINTS_WHITELIST = {
             "/css/**",
@@ -48,24 +51,24 @@ public class SecurityConfiguration {
         http.
         authorizeRequests().antMatchers(ENDPOINTS_WHITELIST).permitAll()
                                 .anyRequest().authenticated()
-                                        .and().formLogin().permitAll().and()
+                                        .and().formLogin().loginPage("/login.html").permitAll().and()
                         .logout().permitAll().and().httpBasic();
 http.cors().disable().csrf().disable();
 
         http.headers().frameOptions().sameOrigin();
-             http.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and();
+           http.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and();
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+    public DaoAuthenticationProvider authenticationProvider(AuthenticationManagerBuilder auth) throws Exception {
 
-        authProvider.setUserDetailsService(customerServiceImpl);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        DaoAuthenticationProvider authenticationProvide=new DaoAuthenticationProvider();
+        authenticationProvide.setUserDetailsService(customerServiceImpl);
+        authenticationProvide.setPasswordEncoder(passwordEncoder);
 
-        return authProvider;
+        return authenticationProvide;
     }
     @Bean
     public PasswordEncoder passwordEncoder() {

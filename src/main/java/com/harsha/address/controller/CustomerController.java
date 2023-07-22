@@ -47,14 +47,15 @@ public class CustomerController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        Customer userDetails = (Customer) authentication.getPrincipal();
+        //Customer userDetails = (Customer) authentication.getPrincipal();
 
 
         return ResponseEntity.ok(new JwtResponse(jwt,
 
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                userDetails.getCrole()));
+                authentication.getName(),
+            null
+
+,            null));
     }
 
 }

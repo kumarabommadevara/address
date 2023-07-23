@@ -11,8 +11,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity(debug = true)
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
     @Autowired
     CustomerServiceImpl customerServiceImpl;
@@ -51,21 +55,24 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.
+        return http.
                 authorizeRequests().antMatchers(ENDPOINTS_WHITELIST).permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin().loginPage("/login.html").permitAll().and()
-                .logout().permitAll().and().httpBasic();
-        http.cors().disable().csrf().disable();
-
-        http.headers().frameOptions().sameOrigin();
-        http.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and();
-        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+                .and()
+                .logout().permitAll().and().httpBasic().and().
+                cors().disable().csrf().disable().
+                sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(authenticationJwtTokenFilter(),UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint)
+                .and().headers().frameOptions().sameOrigin().frameOptions().and().and()
+                .build();
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider(AuthenticationManagerBuilder auth) throws Exception {
+    public DaoAuthenticationProvider authenticationProvider() throws Exception {
 
         DaoAuthenticationProvider authenticationProvide = new DaoAuthenticationProvider();
         authenticationProvide.setUserDetailsService(customerServiceImpl);

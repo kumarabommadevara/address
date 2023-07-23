@@ -28,8 +28,10 @@ public class SecurityConfiguration {
     CustomerServiceImpl customerServiceImpl;
     @Autowired
     RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+
+
     @Autowired
-    PasswordEncoder passwordEncoder;
+    JWTAuthenticationFilter authenticationFilter;
 
     public static final String[] ENDPOINTS_WHITELIST = {
             "/css/**",
@@ -40,6 +42,7 @@ public class SecurityConfiguration {
             "/signup",
             "/h2-console/**"
     };
+
     @Bean
     public JWTAuthenticationFilter authenticationJwtTokenFilter() {
         return new JWTAuthenticationFilter();
@@ -49,31 +52,33 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.
-        authorizeRequests().antMatchers(ENDPOINTS_WHITELIST).permitAll()
-                                .anyRequest().authenticated()
-                                        .and().formLogin().loginPage("/login.html").permitAll().and()
-                        .logout().permitAll().and().httpBasic();
-http.cors().disable().csrf().disable();
+                authorizeRequests().antMatchers(ENDPOINTS_WHITELIST).permitAll()
+                .anyRequest().authenticated()
+                .and().formLogin().loginPage("/login.html").permitAll().and()
+                .logout().permitAll().and().httpBasic();
+        http.cors().disable().csrf().disable();
 
         http.headers().frameOptions().sameOrigin();
-           http.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and();
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and();
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(AuthenticationManagerBuilder auth) throws Exception {
 
-        DaoAuthenticationProvider authenticationProvide=new DaoAuthenticationProvider();
+        DaoAuthenticationProvider authenticationProvide = new DaoAuthenticationProvider();
         authenticationProvide.setUserDetailsService(customerServiceImpl);
-        authenticationProvide.setPasswordEncoder(passwordEncoder);
+        authenticationProvide.setPasswordEncoder(passwordEncoder());
 
         return authenticationProvide;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

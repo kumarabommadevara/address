@@ -4,6 +4,7 @@ package com.harsha.address.config;
 import java.security.Key;
 import java.util.Date;
 
+import com.harsha.address.model.CustomCustomerDetail;
 import com.harsha.address.model.Customer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,10 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
 
-       // Customer userPrincipal = (Customer) authentication.();
+        CustomCustomerDetail userPrincipal = (CustomCustomerDetail) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((authentication.getName()))
+                .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key(), SignatureAlgorithm.HS256)

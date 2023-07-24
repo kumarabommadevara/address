@@ -10,3 +10,6 @@ VALUES ('guntur','vidyanagar',522007,'AP','India',1);
 
 INSERT INTO addresses (city,street_Name,zip_Code,state,country,instructor_Id)
 VALUES ('hyd','manikonda',566667,'TS','India',2);
+
+INSERT INTO addresses (city,street_Name,zip_Code,state,country,instructor_Id)
+VALUES ('Vizag','mvp colony',55553,'AP','India',3);

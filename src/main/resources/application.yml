@@ -2,6 +2,8 @@ logging:
   level:
     root: DEBUG
 spring:
+  application:
+    name: ADDRESS_API
   main:
     allow-circular-references: true
   profiles.actives: dev
@@ -24,3 +26,7 @@ bezkoder:
     jwtExpirationMs: 60000
     jwtSecret: ======================BezKoder=Spring===========================
 
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
